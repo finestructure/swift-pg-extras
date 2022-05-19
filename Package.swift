@@ -13,10 +13,10 @@ let package = Package(
         // Targets are the basic building blocks of a package. A target can define a module or a test suite.
         // Targets can depend on other targets in this package, and on products in packages this package depends on.
         .executableTarget(
-            name: "swift-pg-extras",
+            name: "pg-extras",
             dependencies: []),
         .testTarget(
-            name: "swift-pg-extrasTests",
-            dependencies: ["swift-pg-extras"]),
+            name: "pg-extrasTests",
+            dependencies: ["pg-extras"]),
     ]
 )
