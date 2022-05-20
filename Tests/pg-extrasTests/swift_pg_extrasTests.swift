@@ -15,7 +15,7 @@ final class swift_pg_extrasTests: XCTestCase {
         // Mac Catalyst won't have `Process`, but it is supported for executables.
         #if !targetEnvironment(macCatalyst)
 
-        let fooBinary = productsDirectory.appendingPathComponent("swift-pg-extras")
+        let fooBinary = productsDirectory.appendingPathComponent("pg-extras")
 
         let process = Process()
         process.executableURL = fooBinary
