@@ -5,7 +5,7 @@ import ArgumentParser
 public struct PGExtras: AsyncParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "PG Extras",
-        subcommands: []
+        subcommands: [CacheHit.self]
     )
 
     public init() { }
