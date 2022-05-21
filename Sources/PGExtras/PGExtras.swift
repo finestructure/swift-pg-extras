@@ -27,7 +27,7 @@ extension PGExtras {
         var username: String
         var database: String
         var password: String
-        var tls: TLS! = .disable
+        var tls: TLS? = .disable
 
         init?(argument: String) {
             guard let data = try? Data(contentsOf: URL(fileURLWithPath: argument)),

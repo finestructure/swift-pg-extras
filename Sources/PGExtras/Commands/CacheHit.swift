@@ -45,35 +45,4 @@ extension CacheHit {
         sum(heap_blks_hit) / nullif(sum(heap_blks_hit) + sum(heap_blks_read),0) AS ratio
         FROM pg_statio_user_tables
         """
-
-}
-
-
-private extension PostgresConnection.Configuration {
-    init(credentials: PGExtras.Credentials) throws {
-        self.init(
-            connection: .init(
-                host: credentials.host,
-                port: credentials.port
-            ),
-            authentication: .init(
-                username: credentials.username,
-                database: credentials.database,
-                password: credentials.password
-            ),
-            tls: try .init(tls: credentials.tls)
-        )
-    }
-}
-
-
-private extension PostgresConnection.Configuration.TLS {
-    init(tls: PGExtras.Credentials.TLS) throws {
-        switch tls {
-            case .disable:
-                self = .disable
-            case .require:
-                self = try .require(.init(configuration: .clientDefault))
-        }
-    }
 }
