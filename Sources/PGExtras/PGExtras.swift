@@ -6,7 +6,7 @@ import Foundation
 public struct PGExtras: AsyncParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "PG Extras",
-        subcommands: [CacheHit.self]
+        subcommands: [CacheHit.self, Bloat.self]
     )
 
     public init() { }

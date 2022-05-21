@@ -7,8 +7,6 @@ struct CacheHit: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
     func run() async throws {
-        print("cache hit")
-
         let config = try PostgresConnection.Configuration(credentials: options.credentials)
 
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
