@@ -1,6 +1,8 @@
+import Foundation
+
 import ArgumentParser
 import PostgresNIO
-import Foundation
+import SwiftyTextTable
 
 
 struct Bloat: AsyncParsableCommand {
@@ -19,12 +21,22 @@ struct Bloat: AsyncParsableCommand {
                                                         id: 1,
                                                         logger: logger)
 
-        do {
-            let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
-            for try await (type, schemaName, objectName, bloat, waste) in rows.decode((String, String, String, Decimal, String).self, context: .default) {
-                print(type, schemaName, objectName, bloat, waste)
-            }
+        var table = TextTable(columns: [
+            .init(header: "Type"),
+            .init(header: "Schema Name"),
+            .init(header: "Object Name"),
+            .init(header: "Bloat"),
+            .init(header: "Waste"),
+        ])
+
+        let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
+        for try await (type, schemaName, objectName, bloat, waste) in rows.decode((String, String, String, Decimal, String).self, context: .default) {
+            table.addRow(values: [type, schemaName, objectName, bloat, waste])
         }
+        //        table.columnFence = "│"
+        //        table.rowFence = "─"
+        //        table.cornerFence = "┼"
+        print(table.render())
 
         try await conn.close()
     }
