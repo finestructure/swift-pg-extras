@@ -1,6 +1,8 @@
+import Foundation
+
 import ArgumentParser
 import PostgresNIO
-import Foundation
+import Table
 
 
 struct Bloat: AsyncParsableCommand {
@@ -21,9 +23,16 @@ struct Bloat: AsyncParsableCommand {
 
         do {
             let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
+            var data: [[Any]] = [
+                ["Type", "Schema Name", "Object Name", "Bloat", "Waste"]
+            ]
             for try await (type, schemaName, objectName, bloat, waste) in rows.decode((String, String, String, Decimal, String).self, context: .default) {
-                print(type, schemaName, objectName, bloat, waste)
+                data.append([
+                    type, schemaName, objectName, bloat, waste
+                ])
             }
+            let table = try Table(data: data).table()
+            print(table)
         }
 
         try await conn.close()
