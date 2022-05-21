@@ -79,7 +79,25 @@ extension PGExtrasCommand {
         try await conn.close()
     }
 
-    static func print(data: [Row.Values]) {
+    static func run<T0: PostgresDecodable,
+                    T1: PostgresDecodable>(_: (T0, T1).Type,
+                                           credentials: PGExtras.Credentials) async throws -> [(T0, T1)] {
+        var data: [(T0, T1)] = []
+        try await runQuery(credentials: credentials, process: { rows in
+            for try await row in rows.decode((T0, T1).self, context: .default) {
+                data.append(row)
+            }
+        })
+        return data
+    }
+
+    static func run<T0: PostgresDecodable,
+                    T1: PostgresDecodable>(_ type: (T0, T1).Type,
+                                           credentials: PGExtras.Credentials,
+                                           _ transform: ((T0, T1)) -> Row) async throws {
+        let data = try await run(type.self, credentials: credentials)
+            .map(transform)
+            .map(\.values)
         Row.table.print(data, style: Style.psql)
     }
 }

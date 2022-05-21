@@ -14,7 +14,7 @@ struct Bloat: AsyncParsableCommand {
             for try await row in rows.decode(Row.Values.self, context: .default) {
                 data.append(row)
             }
-            Self.print(data: data)
+            Row.table.print(data, style: Style.psql)
         }
     }
 }
