@@ -1,6 +1,8 @@
+import Foundation
+
 import ArgumentParser
 import PostgresNIO
-import Foundation
+import TextTable
 
 
 struct CacheHit: AsyncParsableCommand {
@@ -19,18 +21,34 @@ struct CacheHit: AsyncParsableCommand {
                                                         id: 1,
                                                         logger: logger)
 
-        do {
-            let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
-            for try await (name, ratio) in rows.decode((String, Decimal?).self, context: .default) {
-                print(name, ratio ?? "NULL")
-            }
+        let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
+        var data: [Row] = []
+        for try await row in rows
+            .decode(Row.Values.self, context: .default)
+            .map(Row.init) {
+            data.append(row)
         }
+        Row.table.print(data, style: Style.psql)
 
         try await conn.close()
     }
 }
 
 extension CacheHit {
+    struct Row {
+        typealias Values = (String, Decimal?)
+
+        var values: Values
+
+        static let table = TextTable<Row> {
+            [
+                Column(title: "Name", value: $0.values.0),
+                Column(title: "Ratio", value: $0.values.1 ?? "NULL"),
+
+            ]
+        }
+    }
+
     static let sql = """
         -- cache-hit
         SELECT
