@@ -71,6 +71,15 @@
         "revision" : "1a4692acb88156e3da1b0c6732a8a38b2a744166",
         "version" : "1.12.0"
       }
+    },
+    {
+      "identity" : "texttable",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/cfilipov/texttable.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "e03289289155b4e7aa565e32862f9cb42140596a"
+      }
     }
   ],
   "version" : 2

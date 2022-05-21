@@ -1,6 +1,8 @@
+import Foundation
+
 import ArgumentParser
 import PostgresNIO
-import Foundation
+import TextTable
 
 
 struct Bloat: AsyncParsableCommand {
@@ -19,12 +21,24 @@ struct Bloat: AsyncParsableCommand {
                                                         id: 1,
                                                         logger: logger)
 
-        do {
-            let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
-            for try await (type, schemaName, objectName, bloat, waste) in rows.decode((String, String, String, Decimal, String).self, context: .default) {
-                print(type, schemaName, objectName, bloat, waste)
-            }
+        let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
+        let table = TextTable<Row> {
+            [
+                Column(title: "Type", value: $0.type),
+                Column(title: "Schema Name", value: $0.schemaName),
+                Column(title: "Object Name", value: $0.objectName),
+                Column(title: "Bloat", value: $0.bloat, align: .right),
+                Column(title: "Waste", value: $0.waste, align: .center),
+
+            ]
         }
+        var data: [Row] = []
+        for try await row in rows
+            .decode((String, String, String, Decimal, String).self, context: .default)
+            .map(Row.init) {
+            data.append(row)
+        }
+        table.print(data, style: Style.psql)
 
         try await conn.close()
     }
@@ -33,6 +47,14 @@ struct Bloat: AsyncParsableCommand {
 
 
 extension Bloat {
+    struct Row {
+        var type: String
+        var schemaName: String
+        var objectName: String
+        var bloat: Decimal
+        var waste: String
+    }
+
     static let sql = """
         -- bloat
         WITH constants AS (
