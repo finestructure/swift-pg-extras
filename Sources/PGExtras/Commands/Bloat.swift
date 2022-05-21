@@ -9,13 +9,9 @@ struct Bloat: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
     func run() async throws {
-        try await Self.runQuery(credentials: options.credentials) { rows in
-            var data: [Row.Values] = []
-            for try await row in rows.decode(Row.Values.self, context: .default) {
-                data.append(row)
-            }
-            Row.table.print(data, style: Style.psql)
-        }
+        try await Self.run(Row.Values.self,
+                           credentials: options.credentials,
+                           Row.init)
     }
 }
 

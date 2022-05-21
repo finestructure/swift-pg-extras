@@ -56,7 +56,7 @@ protocol PGExtrasCommand {
 
 
 extension PGExtrasCommand {
-    static func runQuery(
+    private static func runQuery(
         credentials: PGExtras.Credentials,
         process: (PostgresRowSequence) async throws -> Void
     ) async throws {
@@ -78,27 +78,43 @@ extension PGExtrasCommand {
 
         try await conn.close()
     }
+}
 
-    static func run<T0: PostgresDecodable,
-                    T1: PostgresDecodable>(_: (T0, T1).Type,
-                                           credentials: PGExtras.Credentials) async throws -> [(T0, T1)] {
-        var data: [(T0, T1)] = []
-        try await runQuery(credentials: credentials, process: { rows in
-            for try await row in rows.decode((T0, T1).self, context: .default) {
-                data.append(row)
-            }
-        })
-        return data
-    }
 
+// MARK: - run overloads
+
+extension PGExtrasCommand {
+    // 2
     static func run<T0: PostgresDecodable,
                     T1: PostgresDecodable>(_ type: (T0, T1).Type,
                                            credentials: PGExtras.Credentials,
                                            _ transform: ((T0, T1)) -> Row) async throws {
-        let data = try await run(type.self, credentials: credentials)
-            .map(transform)
-            .map(\.values)
-        Row.table.print(data, style: Style.psql)
+        typealias Tuple = (T0, T1)
+        var data: [Tuple] = []
+        try await runQuery(credentials: credentials, process: { rows in
+            for try await row in rows.decode(Tuple.self, context: .default) {
+                data.append(row)
+            }
+        })
+        Row.table.print(data.map(transform).map(\.values), style: Style.psql)
+    }
+
+    // 5
+    static func run<T0: PostgresDecodable,
+                    T1: PostgresDecodable,
+                    T2: PostgresDecodable,
+                    T3: PostgresDecodable,
+                    T4: PostgresDecodable>(_ type: (T0, T1, T2, T3, T4).Type,
+                                           credentials: PGExtras.Credentials,
+                                           _ transform: ((T0, T1, T2, T3, T4)) -> Row) async throws {
+        typealias Tuple = (T0, T1, T2, T3, T4)
+        var data: [Tuple] = []
+        try await runQuery(credentials: credentials, process: { rows in
+            for try await row in rows.decode(Tuple.self, context: .default) {
+                data.append(row)
+            }
+        })
+        Row.table.print(data.map(transform).map(\.values), style: Style.psql)
     }
 }
 
