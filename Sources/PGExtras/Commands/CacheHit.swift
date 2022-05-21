@@ -4,21 +4,12 @@ import Foundation
 
 
 struct CacheHit: AsyncParsableCommand {
+    @OptionGroup var options: PGExtras.Options
+
     func run() async throws {
         print("cache hit")
 
-        let config = PostgresConnection.Configuration(
-            connection: .init(
-                host: "localhost",
-                port: 6432
-            ),
-            authentication: .init(
-                username: "spi_dev",
-                database: "spi_dev",
-                password: "xxx"
-            ),
-            tls: .disable
-        )
+        let config = PostgresConnection.Configuration(credentials: options.credentials)
 
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         defer { try? eventLoopGroup.syncShutdownGracefully() }
@@ -33,7 +24,7 @@ struct CacheHit: AsyncParsableCommand {
         do {
             let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
             for try await (name, ratio) in rows.decode((String, Decimal?).self, context: .default) {
-                print(name, ratio)
+                print(name, ratio ?? "NULL")
             }
         }
 
@@ -55,4 +46,23 @@ extension CacheHit {
         FROM pg_statio_user_tables
         """
 
+}
+
+
+extension PostgresConnection.Configuration {
+    init(credentials: PGExtras.Credentials) {
+        self.init(
+            connection: .init(
+                host: credentials.host,
+                port: credentials.port
+            ),
+            authentication: .init(
+                username: credentials.username,
+                database: credentials.database,
+                password: credentials.password
+            ),
+            tls: .disable
+//            tls: .require(.init(configuration: .clientDefault))
+        )
+    }
 }
