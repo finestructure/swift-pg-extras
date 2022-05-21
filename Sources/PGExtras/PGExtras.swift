@@ -9,7 +9,7 @@ import PostgresNIO
 public struct PGExtras: AsyncParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "PG Extras",
-        subcommands: [CacheHit.self, Bloat.self]
+        subcommands: [CacheHit.self, Bloat.self, Blocking.self]
     )
 
     public init() { }
@@ -78,6 +78,14 @@ extension PGExtrasCommand {
 
         try await conn.close()
     }
+
+    static func print(_ data: [Row.Values], style: TextTableStyle.Type) {
+        guard !data.isEmpty else {
+            Swift.print("Query returned no data.")
+            return
+        }
+        Row.table.print(data, style: style)
+    }
 }
 
 
@@ -96,7 +104,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        Row.table.print(data.map(transform).map(\.values), style: Style.psql)
+        print(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 5
@@ -114,7 +122,26 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        Row.table.print(data.map(transform).map(\.values), style: Style.psql)
+        print(data.map(transform).map(\.values), style: Style.psql)
+    }
+
+    // 6
+    static func run<T0: PostgresDecodable,
+                    T1: PostgresDecodable,
+                    T2: PostgresDecodable,
+                    T3: PostgresDecodable,
+                    T4: PostgresDecodable,
+                    T5: PostgresDecodable>(_ type: (T0, T1, T2, T3, T4, T5).Type,
+                                           credentials: PGExtras.Credentials,
+                                           _ transform: ((T0, T1, T2, T3, T4, T5)) -> Row) async throws {
+        typealias Tuple = (T0, T1, T2, T3, T4, T5)
+        var data: [Tuple] = []
+        try await runQuery(credentials: credentials, process: { rows in
+            for try await row in rows.decode(Tuple.self, context: .default) {
+                data.append(row)
+            }
+        })
+        print(data.map(transform).map(\.values), style: Style.psql)
     }
 }
 
