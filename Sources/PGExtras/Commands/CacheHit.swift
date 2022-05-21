@@ -1,7 +1,6 @@
 import Foundation
 
 import ArgumentParser
-import PostgresNIO
 import TextTable
 
 
