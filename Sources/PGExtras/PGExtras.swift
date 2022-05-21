@@ -9,7 +9,7 @@ import PostgresNIO
 public struct PGExtras: AsyncParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "PG Extras",
-        subcommands: [CacheHit.self, Bloat.self, Blocking.self]
+        subcommands: [CacheHit.self, Bloat.self, Blocking.self, IndexSize.self]
     )
 
     public init() { }
