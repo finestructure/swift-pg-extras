@@ -27,6 +27,7 @@ extension PGExtras {
         var username: String
         var database: String
         var password: String
+        var tls: TLS! = .disable
 
         init?(argument: String) {
             guard let data = try? Data(contentsOf: URL(fileURLWithPath: argument)),
@@ -35,6 +36,11 @@ extension PGExtras {
                 return nil
             }
             self = decoded
+        }
+
+        enum TLS: String, Decodable {
+            case disable
+            case require
         }
     }
 }

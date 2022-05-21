@@ -9,7 +9,7 @@ struct CacheHit: AsyncParsableCommand {
     func run() async throws {
         print("cache hit")
 
-        let config = PostgresConnection.Configuration(credentials: options.credentials)
+        let config = try PostgresConnection.Configuration(credentials: options.credentials)
 
         let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
         defer { try? eventLoopGroup.syncShutdownGracefully() }
@@ -49,8 +49,8 @@ extension CacheHit {
 }
 
 
-extension PostgresConnection.Configuration {
-    init(credentials: PGExtras.Credentials) {
+private extension PostgresConnection.Configuration {
+    init(credentials: PGExtras.Credentials) throws {
         self.init(
             connection: .init(
                 host: credentials.host,
@@ -61,8 +61,19 @@ extension PostgresConnection.Configuration {
                 database: credentials.database,
                 password: credentials.password
             ),
-            tls: .disable
-//            tls: .require(.init(configuration: .clientDefault))
+            tls: try .init(tls: credentials.tls)
         )
+    }
+}
+
+
+private extension PostgresConnection.Configuration.TLS {
+    init(tls: PGExtras.Credentials.TLS) throws {
+        switch tls {
+            case .disable:
+                self = .disable
+            case .require:
+                self = try .require(.init(configuration: .clientDefault))
+        }
     }
 }
