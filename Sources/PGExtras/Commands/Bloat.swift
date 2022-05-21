@@ -9,46 +9,31 @@ struct Bloat: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
     func run() async throws {
-        let config = try PostgresConnection.Configuration(credentials: options.credentials)
-
-        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        defer { try? eventLoopGroup.syncShutdownGracefully() }
-
-        let logger = Logger(label: "pg-extras")
-
-        let conn = try await PostgresConnection.connect(on: eventLoopGroup.next(),
-                                                        configuration: config,
-                                                        id: 1,
-                                                        logger: logger)
-
-        let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
-        var data: [Row] = []
-        for try await row in rows
-            .decode(Row.Values.self, context: .default)
-            .map(Row.init) {
-            data.append(row)
+        try await Self.runQuery(credentials: options.credentials) { rows in
+            var data: [Row.Values] = []
+            for try await row in rows.decode(Row.Values.self, context: .default) {
+                data.append(row)
+            }
+            Self.print(data: data)
         }
-        Row.table.print(data, style: Style.psql)
-
-        try await conn.close()
     }
 }
 
 
 
-extension Bloat {
-    struct Row {
+extension Bloat: PGExtrasCommand {
+    struct Row: PGExtrasCommandRow {
         typealias Values = (String, String, String, Decimal, String)
 
         var values: Values
 
-        static let table = TextTable<Row> {
+        static let table = TextTable<Row.Values> {
             [
-                Column(title: "Type", value: $0.values.0),
-                Column(title: "Schema Name", value: $0.values.1),
-                Column(title: "Object Name", value: $0.values.2),
-                Column(title: "Bloat", value: $0.values.3, align: .right),
-                Column(title: "Waste", value: $0.values.4, align: .center),
+                Column(title: "Type", value: $0),
+                Column(title: "Schema Name", value: $1),
+                Column(title: "Object Name", value: $2),
+                Column(title: "Bloat", value: $3, align: .right),
+                Column(title: "Waste", value: $4, align: .center),
 
             ]
         }

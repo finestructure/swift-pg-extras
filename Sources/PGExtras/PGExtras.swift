@@ -1,5 +1,8 @@
-import ArgumentParser
 import Foundation
+
+import ArgumentParser
+import TextTable
+import PostgresNIO
 
 
 @main
@@ -44,3 +47,50 @@ extension PGExtras {
         }
     }
 }
+
+
+protocol PGExtrasCommand {
+    associatedtype Row: PGExtrasCommandRow
+    static var sql: String { get }
+}
+
+
+extension PGExtrasCommand {
+    static func runQuery(
+        credentials: PGExtras.Credentials,
+        process: (PostgresRowSequence) async throws -> Void
+    ) async throws {
+        let config = try PostgresConnection.Configuration(credentials: credentials)
+
+        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
+        defer { try? eventLoopGroup.syncShutdownGracefully() }
+
+        let logger = Logger(label: "pg-extras")
+
+        let conn = try await PostgresConnection.connect(on: eventLoopGroup.next(),
+                                                        configuration: config,
+                                                        id: 1,
+                                                        logger: logger)
+
+        let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
+
+        try await process(rows)
+
+        try await conn.close()
+    }
+
+    static func print(data: [Row.Values]) {
+        Row.table.print(data, style: Style.psql)
+    }
+}
+
+
+protocol PGExtrasCommandRow {
+    associatedtype Values
+
+    var values: Values { get }
+
+    static var table: TextTable<Self.Values> { get }
+}
+
+

@@ -9,41 +9,26 @@ struct CacheHit: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
     func run() async throws {
-        let config = try PostgresConnection.Configuration(credentials: options.credentials)
-
-        let eventLoopGroup = MultiThreadedEventLoopGroup(numberOfThreads: 1)
-        defer { try? eventLoopGroup.syncShutdownGracefully() }
-
-        let logger = Logger(label: "pg-extras")
-
-        let conn = try await PostgresConnection.connect(on: eventLoopGroup.next(),
-                                                        configuration: config,
-                                                        id: 1,
-                                                        logger: logger)
-
-        let rows = try await conn.query(.init(stringLiteral: Self.sql), logger: logger)
-        var data: [Row] = []
-        for try await row in rows
-            .decode(Row.Values.self, context: .default)
-            .map(Row.init) {
-            data.append(row)
+        try await Self.runQuery(credentials: options.credentials) { rows in
+            var data: [Row.Values] = []
+            for try await row in rows.decode(Row.Values.self, context: .default) {
+                data.append(row)
+            }
+            Self.print(data: data)
         }
-        Row.table.print(data, style: Style.psql)
-
-        try await conn.close()
     }
 }
 
-extension CacheHit {
-    struct Row {
+extension CacheHit: PGExtrasCommand {
+    struct Row: PGExtrasCommandRow {
         typealias Values = (String, Decimal?)
 
         var values: Values
 
-        static let table = TextTable<Row> {
+        static let table = TextTable<Values> {
             [
-                Column(title: "Name", value: $0.values.0),
-                Column(title: "Ratio", value: $0.values.1 ?? "NULL"),
+                Column(title: "Name", value: $0),
+                Column(title: "Ratio", value: $1 ?? "NULL"),
 
             ]
         }
