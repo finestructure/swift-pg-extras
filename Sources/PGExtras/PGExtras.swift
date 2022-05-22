@@ -19,6 +19,7 @@ public struct PGExtras: AsyncParsableCommand {
             LongRunningQueries.self,
             RecordsRank.self,
             SeqScans.self,
+            StatReset.self,
             TableIndexesSize.self,
             TableSize.self,
             TotalIndexSize.self,
@@ -72,9 +73,9 @@ protocol PGExtrasCommand {
 
 
 extension PGExtrasCommand {
-    private static func runQuery(
+    static func runQuery(
         credentials: PGExtras.Credentials,
-        process: (PostgresRowSequence) async throws -> Void
+        process: (PostgresRowSequence) async throws -> Void = { _ in }
     ) async throws {
         let config = try PostgresConnection.Configuration(credentials: credentials)
 
@@ -95,9 +96,9 @@ extension PGExtrasCommand {
         try await conn.close()
     }
 
-    static func print(_ data: [Row.Values], style: TextTableStyle.Type) {
+    static func printTable(_ data: [Row.Values], style: TextTableStyle.Type) {
         guard !data.isEmpty else {
-            Swift.print("Query returned no data.")
+            print("Query returned no data.")
             return
         }
         Row.table.print(data, style: style)
@@ -119,7 +120,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 2
@@ -134,7 +135,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 3
@@ -150,7 +151,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 3
@@ -167,7 +168,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 5
@@ -185,7 +186,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 6
@@ -204,7 +205,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 7
@@ -224,7 +225,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 
     // 8
@@ -245,7 +246,7 @@ extension PGExtrasCommand {
                 data.append(row)
             }
         })
-        print(data.map(transform).map(\.values), style: Style.psql)
+        printTable(data.map(transform).map(\.values), style: Style.psql)
     }
 }
 
