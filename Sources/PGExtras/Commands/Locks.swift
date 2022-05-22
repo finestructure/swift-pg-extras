@@ -2,20 +2,22 @@ import ArgumentParser
 import TextTable
 
 
-struct Locks: AsyncParsableCommand {
+public struct Locks: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
-    func run() async throws {
+    public func run() async throws {
         try await Self.run(Row.Values.self,
                            credentials: options.credentials,
                            Row.init)
     }
+
+    public init() { }
 }
 
 
 
 extension Locks: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (Int, String, Int, String, String, String)
 
         var values: Values

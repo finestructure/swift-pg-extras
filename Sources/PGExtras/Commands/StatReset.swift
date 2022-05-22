@@ -2,19 +2,21 @@ import ArgumentParser
 import TextTable
 
 
-struct StatReset: AsyncParsableCommand {
+public struct StatReset: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
-    func run() async throws {
+    public func run() async throws {
         try await Self.runQuery(credentials: options.credentials)
         print("pg_stat has been reset.")
     }
+
+    public init() { }
 }
 
 
 
 extension StatReset: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, String?, Int)
 
         var values: Values
