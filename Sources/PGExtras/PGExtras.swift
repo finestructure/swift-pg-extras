@@ -43,7 +43,7 @@ extension PGExtras {
 
     struct Credentials: ExpressibleByArgument, Decodable {
         var host: String
-        var port: Int = 5432
+        var port: Int
         var username: String
         var database: String
         var password: String

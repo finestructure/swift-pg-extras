@@ -4,24 +4,55 @@ Commands providing shortcuts to common Postgres introspection queries. This pack
 
 Most of the commands have been ported, except for a few that need special database configuration or where it's unclear how to port them.
 
+## Installation
+
+Via mint:
+
+```
+mint install finestructure/swift-pg-extras
+```
+
+Or clone the repository and run/install it like any other Swift command line utility.
+
 ## How to run
 
 Get a list of all available commands:
 
 ```
-swift run pg-extras --help
+pg-extras --help
 ```
 
 Example command:
 
 ```
-swift run pg-extras cache-hits
+pg-extras -c .credentials cache-hits
 +----------------+---------------------+
 | Name           | Ratio               |
 +----------------+---------------------+
 | index hit rate | 0.9993522581171029  |
 | table hit rate | 0.9993522581171029  |
 +----------------+---------------------+
+```
+
+where `.credentials` containes your Postgres database connection details:
+
+```json
+{
+    "host": "localhost",
+    "port": 5432,
+    "username": "foo",
+    "database": "bar",
+    "password": "pass"
+}
+```
+
+The credentials file supports an optional field `tls` to `disable` or `require` TLS:
+
+```json
+{
+    ...
+    "tls": "require"
+}
 ```
 
 ## Available commands
