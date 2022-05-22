@@ -15,7 +15,7 @@ struct Blocking: AsyncParsableCommand {
 
 
 extension Blocking: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (Int?, String?, Decimal?, Int?, String?, Decimal?)
 
         var values: Values

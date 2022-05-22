@@ -15,7 +15,7 @@ struct CacheHit: AsyncParsableCommand {
 }
 
 extension CacheHit: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, Decimal?)
 
         var values: Values

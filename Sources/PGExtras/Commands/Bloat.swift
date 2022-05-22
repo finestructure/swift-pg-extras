@@ -17,7 +17,7 @@ struct Bloat: AsyncParsableCommand {
 
 
 extension Bloat: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, String, String, Decimal, String)
 
         var values: Values

@@ -1,8 +1,7 @@
 import TextTable
 
 
-#warning("rename to TableRow")
-protocol PGExtrasCommandRow {
+protocol TableRow {
     associatedtype Values
 
     var values: Values { get }

@@ -14,7 +14,7 @@ struct StatReset: AsyncParsableCommand {
 
 
 extension StatReset: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, String?, Int)
 
         var values: Values

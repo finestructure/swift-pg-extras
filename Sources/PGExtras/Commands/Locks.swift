@@ -15,7 +15,7 @@ struct Locks: AsyncParsableCommand {
 
 
 extension Locks: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (Int, String, Int, String, String, String)
 
         var values: Values

@@ -3,7 +3,7 @@ import TextTable
 
 
 protocol PGExtrasCommand {
-    associatedtype Row: PGExtrasCommandRow
+    associatedtype Row: TableRow
     static var sql: String { get }
 }
 

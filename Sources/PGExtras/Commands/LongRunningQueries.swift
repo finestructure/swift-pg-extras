@@ -16,7 +16,7 @@ struct LongRunningQueries: AsyncParsableCommand {
 
 
 extension LongRunningQueries: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (Int, Decimal, String)
 
         var values: Values

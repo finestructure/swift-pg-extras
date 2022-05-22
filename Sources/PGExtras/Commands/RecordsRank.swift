@@ -15,7 +15,7 @@ struct RecordsRank: AsyncParsableCommand {
 
 
 extension RecordsRank: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, Int)
 
         var values: Values

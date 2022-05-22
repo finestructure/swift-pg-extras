@@ -15,7 +15,7 @@ struct VacuumStats: AsyncParsableCommand {
 
 
 extension VacuumStats: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, String, String?, String?, String, String, String, String?)
 
         var values: Values

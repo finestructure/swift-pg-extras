@@ -15,7 +15,7 @@ struct TotalIndexSize: AsyncParsableCommand {
 
 
 extension TotalIndexSize: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String)
 
         var values: Values

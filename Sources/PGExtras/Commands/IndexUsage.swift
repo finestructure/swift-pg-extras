@@ -15,7 +15,7 @@ struct IndexUsage: AsyncParsableCommand {
 
 
 extension IndexUsage: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, String?, Int)
 
         var values: Values

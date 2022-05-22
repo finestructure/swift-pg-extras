@@ -15,7 +15,7 @@ struct TableIndexesSize: AsyncParsableCommand {
 
 
 extension TableIndexesSize: PGExtrasCommand {
-    struct Row: PGExtrasCommandRow {
+    struct Row: TableRow {
         typealias Values = (String, String)
 
         var values: Values
