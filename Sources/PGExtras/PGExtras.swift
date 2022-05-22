@@ -21,7 +21,8 @@ public struct PGExtras: AsyncParsableCommand {
             TableIndexesSize.self,
             TableSize.self,
             TotalIndexSize.self,
-            TotalTableSize.self
+            TotalTableSize.self,
+            UnusedIndexes.self
         ]
     )
 
@@ -141,6 +142,23 @@ extension PGExtrasCommand {
                                            credentials: PGExtras.Credentials,
                                            _ transform: ((T0, T1, T2)) -> Row) async throws {
         typealias Tuple = (T0, T1, T2)
+        var data: [Tuple] = []
+        try await runQuery(credentials: credentials, process: { rows in
+            for try await row in rows.decode(Tuple.self, context: .default) {
+                data.append(row)
+            }
+        })
+        print(data.map(transform).map(\.values), style: Style.psql)
+    }
+
+    // 3
+    static func run<T0: PostgresDecodable,
+                    T1: PostgresDecodable,
+                    T2: PostgresDecodable,
+                    T3: PostgresDecodable>(_ type: (T0, T1, T2, T3).Type,
+                                           credentials: PGExtras.Credentials,
+                                           _ transform: ((T0, T1, T2, T3)) -> Row) async throws {
+        typealias Tuple = (T0, T1, T2, T3)
         var data: [Tuple] = []
         try await runQuery(credentials: credentials, process: { rows in
             for try await row in rows.decode(Tuple.self, context: .default) {
