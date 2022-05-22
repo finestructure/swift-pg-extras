@@ -3,10 +3,11 @@
 import PackageDescription
 
 let package = Package(
-    name: "swift-pg-extras",
+    name: "PGExtras",
     platforms: [.macOS(.v12)],
     products: [
-        .executable(name: "pg-extras", targets: ["pg-extras"])
+        .executable(name: "pg-extras", targets: ["pg-extras"]),
+        .library(name: "PGExtras", targets: ["PGExtras"])
     ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.2"),
