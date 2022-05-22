@@ -25,7 +25,7 @@ pg-extras --help
 Example command:
 
 ```
-pg-extras cache-hits -c .credentials
+pg-extras cache-hit -c .credentials
 +----------------+---------------------+
 | Name           | Ratio               |
 +----------------+---------------------+
