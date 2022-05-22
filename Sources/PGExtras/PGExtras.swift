@@ -5,7 +5,7 @@ import TextTable
 import PostgresNIO
 
 
-// @main
+@main
 public struct PGExtras: AsyncParsableCommand {
     public static var configuration = CommandConfiguration(
         abstract: "PG Extras",

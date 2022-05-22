@@ -1,3 +1,0 @@
-import PGExtras
-
-PGExtras.main()
