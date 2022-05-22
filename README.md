@@ -59,7 +59,7 @@ The credentials file supports an optional field `tls` to `disable` or `require` 
 
 * [x] bloat
 * [x] blocking
-* [x] cache-hits
+* [x] cache-hit
 * [ ] calls
   - requires `create extension pg_stat_statements` and loading pg_stat_statements via shared_preload_libraries
 * [ ] extensions
