@@ -1,0 +1,11 @@
+{
+    "name": "swift:5.6.1-focal",
+    "image": "swift:5.6.1-focal",
+    "extensions": [
+      "sswg.swift-lang"
+    ],
+    "settings": {
+      "lldb.library": "/usr/lib/liblldb.so"
+    },
+    "forwardPorts": [8080]
+}
