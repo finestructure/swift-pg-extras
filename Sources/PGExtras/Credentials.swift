@@ -3,7 +3,7 @@ import Foundation
 import ArgumentParser
 
 
-struct Credentials: ExpressibleByArgument, Decodable {
+public struct Credentials: ExpressibleByArgument, Decodable {
     var host: String
     var port: Int
     var username: String
@@ -11,7 +11,7 @@ struct Credentials: ExpressibleByArgument, Decodable {
     var password: String
     var tls: TLS? = .disable
 
-    init?(argument: String) {
+    public init?(argument: String) {
         guard let data = try? Data(contentsOf: URL(fileURLWithPath: argument)),
               let decoded = try? JSONDecoder().decode(Self.self, from: data)
         else {

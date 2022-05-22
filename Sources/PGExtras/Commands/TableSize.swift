@@ -2,14 +2,16 @@ import ArgumentParser
 import TextTable
 
 
-struct TableSize: AsyncParsableCommand {
+public struct TableSize: AsyncParsableCommand {
     @OptionGroup var options: PGExtras.Options
 
-    func run() async throws {
+    public func run() async throws {
         try await Self.run(Row.Values.self,
                            credentials: options.credentials,
                            Row.init)
     }
+
+    public init() { }
 }
 
 
