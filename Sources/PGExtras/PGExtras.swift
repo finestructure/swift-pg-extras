@@ -20,7 +20,8 @@ public struct PGExtras: AsyncParsableCommand {
             SeqScans.self,
             TableIndexesSize.self,
             TableSize.self,
-            TotalIndexSize.self
+            TotalIndexSize.self,
+            TotalTableSize.self
         ]
     )
 
