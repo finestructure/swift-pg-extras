@@ -5,6 +5,9 @@ import PackageDescription
 let package = Package(
     name: "swift-pg-extras",
     platforms: [.macOS(.v12)],
+    products: [
+        .executable(name: "pg-extras", targets: ["pg-extras"])
+    ],
     dependencies: [
         .package(url: "https://github.com/apple/swift-argument-parser.git", from: "1.1.2"),
         .package(url: "https://github.com/vapor/postgres-nio.git", from: "1.10.0"),
