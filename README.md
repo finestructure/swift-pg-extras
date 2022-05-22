@@ -1,5 +1,8 @@
 # swift-pg-extras
 
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ffinestructure%2Fswift-pg-extras%2Fbadge%3Ftype%3Dswift-versions)](https://swiftpackageindex.com/finestructure/swift-pg-extras)
+[![](https://img.shields.io/endpoint?url=https%3A%2F%2Fswiftpackageindex.com%2Fapi%2Fpackages%2Ffinestructure%2Fswift-pg-extras%2Fbadge%3Ftype%3Dplatforms)](https://swiftpackageindex.com/finestructure/swift-pg-extras)
+
 Commands providing shortcuts to common Postgres introspection queries. This package is a port of [heroku-pg-extras](https://github.com/heroku/heroku-pg-extras).
 
 Most of the commands have been ported, except for a few that need special database configuration or where it's unclear how to port them.
