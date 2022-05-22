@@ -17,7 +17,8 @@ public struct PGExtras: AsyncParsableCommand {
             IndexUsage.self,
             LongRunningQueries.self,
             RecordsRank.self,
-            SeqScans.self
+            SeqScans.self,
+            TableIndexesSize.self
         ]
     )
 
