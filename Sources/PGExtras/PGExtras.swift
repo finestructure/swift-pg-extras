@@ -19,7 +19,8 @@ public struct PGExtras: AsyncParsableCommand {
             RecordsRank.self,
             SeqScans.self,
             TableIndexesSize.self,
-            TableSize.self
+            TableSize.self,
+            TotalIndexSize.self
         ]
     )
 
@@ -103,6 +104,20 @@ extension PGExtrasCommand {
 // MARK: - run overloads
 
 extension PGExtrasCommand {
+    // 1
+    static func run<T0: PostgresDecodable>(_ type: T0.Type,
+                                           credentials: PGExtras.Credentials,
+                                           _ transform: (T0) -> Row) async throws {
+        typealias Tuple = T0
+        var data: [Tuple] = []
+        try await runQuery(credentials: credentials, process: { rows in
+            for try await row in rows.decode(Tuple.self, context: .default) {
+                data.append(row)
+            }
+        })
+        print(data.map(transform).map(\.values), style: Style.psql)
+    }
+
     // 2
     static func run<T0: PostgresDecodable,
                     T1: PostgresDecodable>(_ type: (T0, T1).Type,
