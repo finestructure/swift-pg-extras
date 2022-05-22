@@ -2,7 +2,7 @@ import PostgresNIO
 
 
 extension PostgresConnection.Configuration {
-    init(credentials: PGExtras.Credentials) throws {
+    init(credentials: Credentials) throws {
         self.init(
             connection: .init(
                 host: credentials.host,
@@ -20,7 +20,7 @@ extension PostgresConnection.Configuration {
 
 
 extension PostgresConnection.Configuration.TLS {
-    init(tls: PGExtras.Credentials.TLS) throws {
+    init(tls: Credentials.TLS) throws {
         switch tls {
             case .disable:
                 self = .disable
