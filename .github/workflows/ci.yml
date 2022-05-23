@@ -1,0 +1,22 @@
+name: Continuous Integration
+
+on:
+  workflow_dispatch:
+  push:
+
+
+jobs:
+
+  test-macos:
+    name: Test macOS
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift build -c release
+
+  test-linux:
+    name: Test Linux
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: swift build -c release
