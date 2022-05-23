@@ -12,11 +12,11 @@ jobs:
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v2
-      - run: swift build -c release
+      - run: swift build --disable-automatic-resolution -c release
 
   test-linux:
     name: Test Linux
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - run: swift build -c release
+      - run: swift build --disable-automatic-resolution -c release
