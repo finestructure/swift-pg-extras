@@ -1,10 +1,10 @@
-// swift-tools-version: 5.6
+// swift-tools-version: 5.5
 
 import PackageDescription
 
 let package = Package(
     name: "PGExtras",
-    platforms: [.macOS(.v12)],
+    platforms: [.macOS(.v11)],
     products: [
         .executable(name: "pg-extras", targets: ["pg-extras"]),
         .library(name: "PGExtras", targets: ["PGExtras"])
